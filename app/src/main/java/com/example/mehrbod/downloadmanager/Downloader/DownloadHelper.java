@@ -66,6 +66,10 @@ public class DownloadHelper {
         return (int) (temp * 100);
     }
 
+    public void stopDownload() {
+        downloadManager.remove(downloadId);
+    }
+
     public String getFileName() {
         return fileName;
     }
