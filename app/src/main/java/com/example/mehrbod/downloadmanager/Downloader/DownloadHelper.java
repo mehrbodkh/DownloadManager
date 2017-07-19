@@ -2,6 +2,7 @@ package com.example.mehrbod.downloadmanager.Downloader;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.webkit.URLUtil;
@@ -18,6 +19,7 @@ public class DownloadHelper {
     private Context context = null;
     private long downloadId = 0;
     private int allowedNetworkType = 0;
+    private DownloadManager.Query query = null;
 
     public DownloadHelper(Context context, String fileUrl, int allowedNetworkType) {
         this.url = fileUrl;
@@ -43,5 +45,24 @@ public class DownloadHelper {
 
     public void startDownload() {
         downloadId = downloadManager.enqueue(request);
+        query = new DownloadManager.Query();
+        query.setFilterById(downloadId);
+    }
+
+    public int getProgress() {
+        Cursor cursor = downloadManager.query(query);
+        cursor.moveToFirst();
+
+        int bytesDownloadedSoFar = cursor.getInt(
+                cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+        );
+        int totalBytes = cursor.getInt(
+                cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+        );
+
+        double temp = (double)bytesDownloadedSoFar / (double)totalBytes;
+
+        cursor.close();
+        return (int) (temp * 100);
     }
 }

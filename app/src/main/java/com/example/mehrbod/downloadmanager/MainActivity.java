@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         downloadHelper1.prepareDownload();
         downloadHelper.startDownload();
         downloadHelper1.startDownload();
+        while (true) {
+            downloadHelper.getProgress();
+        }
     }
 }
 
