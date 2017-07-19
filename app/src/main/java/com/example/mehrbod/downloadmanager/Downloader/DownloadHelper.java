@@ -65,4 +65,12 @@ public class DownloadHelper {
         cursor.close();
         return (int) (temp * 100);
     }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getDownloadId() {
+        return downloadId;
+    }
 }
