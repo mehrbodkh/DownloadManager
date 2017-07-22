@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mehrbod.downloadmanager.AddDownload">
+
+
+    <EditText
+        android:id="@+id/addDownloadActivityUrlEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:hint="Enter download URL here"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/addDownloadActivityNameTextview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/addDownloadActivityUrlEditText"
+        android:layout_alignStart="@+id/addDownloadActivityUrlEditText"
+        android:layout_below="@+id/addDownloadActivityUrlEditText"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:text="Name:"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/addDownloadActivityStartTimeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/addDownloadActivityNameTextview"
+        android:layout_alignStart="@+id/addDownloadActivityNameTextview"
+        android:layout_below="@+id/addDownloadActivityNameTextview"
+        android:layout_marginLeft="40dp"
+        android:text="Start Time"
+        android:onClick="onStartTimeButtonClickListener"/>
+
+    <Button
+        android:id="@+id/addDownloadActivityFinishTimeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/addDownloadActivityNameTextview"
+        android:layout_alignRight="@+id/addDownloadActivityNameTextview"
+        android:layout_below="@+id/addDownloadActivityNameTextview"
+        android:layout_marginRight="40dp"
+        android:text="Finish Time"
+        android:onClick="onFinishTimeButtonClickListener"/>
+
+    <EditText
+        android:id="@+id/addDownloadActivityPriorityEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addDownloadActivityStartTimeButton"
+        android:layout_centerHorizontal="true"
+        android:ems="3"
+        android:hint="priority"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/addDownloadActivityAddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Add"
+        android:onClick="onAddDownloadButtonClickListener"/>
+
+
+</RelativeLayout>
