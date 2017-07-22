@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.mehrbod.downloadmanager.Database.DatabaseHelper;
+import com.example.mehrbod.downloadmanager.Database.MyDatabase;
+
 import java.util.Calendar;
 
 public class AddDownload extends AppCompatActivity {
@@ -94,7 +97,8 @@ public class AddDownload extends AppCompatActivity {
         EditText numberPriority = (EditText) findViewById(R.id.addDownloadActivityPriorityEditText);
         priority = Integer.parseInt(numberPriority.getText().toString());
 
-        // put it in database
+        DatabaseHelper db = MyDatabase.getInstance(this);
+        db.insertData(url, startHour, startMinute, finishHour, finishMinute, priority);
 
         finish();
     }

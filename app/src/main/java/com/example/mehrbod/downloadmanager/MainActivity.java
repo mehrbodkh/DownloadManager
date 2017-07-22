@@ -3,6 +3,7 @@ package com.example.mehrbod.downloadmanager;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 
 import com.example.mehrbod.downloadmanager.Adapter.DownloadsAdapter;
+import com.example.mehrbod.downloadmanager.Database.MyDatabase;
 import com.example.mehrbod.downloadmanager.Downloader.DownloadHelper;
 import com.example.mehrbod.downloadmanager.Model.Download;
 
@@ -49,9 +51,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAnimation(animation);
         recyclerView.setAdapter(adapter);
 
-        Download download1 = new Download("www.lksjfls", "hello", new ProgressBar(this));
-        downloadList.add(download1);
-
 
 
     }
@@ -60,7 +59,25 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AddDownload.class);
         startActivity(intent);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        downloadList = new ArrayList<>();
+        Cursor cursor = MyDatabase.getInstance(this).getAllData();
+
+        while (cursor.moveToNext()) {
+
+            Download download = new Download(cursor.getString(1), cursor.getString(7),
+                    new ProgressBar(this));
+            downloadList.add(download);
+        }
+        adapter = new DownloadsAdapter(this, downloadList);
+        recyclerView.setAdapter(adapter);
+    }
 }
+
 
 class Progress implements Runnable {
     private Activity activity;
