@@ -1,6 +1,5 @@
 package com.example.mehrbod.downloadmanager;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -9,12 +8,9 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.mehrbod.downloadmanager.Database.DatabaseHelper;
 import com.example.mehrbod.downloadmanager.Database.MyDatabase;
-
-import java.util.Calendar;
 
 public class AddDownload extends AppCompatActivity {
 
@@ -59,38 +55,6 @@ public class AddDownload extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void onStartTimeButtonClickListener(View view) {
-        Calendar mCurrentTime = Calendar.getInstance();
-        int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mCurrentTime.get(Calendar.MINUTE);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                startHour = selectedHour;
-                startMinute = selectedMinute;
-            }
-        }, hour, minute, true);
-        mTimePicker.setTitle("Select Start Time");
-        mTimePicker.show();
-    }
-
-    public void onFinishTimeButtonClickListener(View view) {
-        Calendar mCurrentTime = Calendar.getInstance();
-        int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mCurrentTime.get(Calendar.MINUTE);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                finishHour = selectedHour;
-                finishMinute = selectedMinute;
-            }
-        }, hour, minute, true);
-        mTimePicker.setTitle("Select Finish Time");
-        mTimePicker.show();
     }
 
     public void onAddDownloadButtonClickListener(View view) {

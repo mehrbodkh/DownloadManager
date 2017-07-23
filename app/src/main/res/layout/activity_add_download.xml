@@ -32,33 +32,12 @@
         android:textColor="#000000"
         android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/addDownloadActivityStartTimeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/addDownloadActivityNameTextview"
-        android:layout_alignStart="@+id/addDownloadActivityNameTextview"
-        android:layout_below="@+id/addDownloadActivityNameTextview"
-        android:layout_marginLeft="40dp"
-        android:text="Start Time"
-        android:onClick="onStartTimeButtonClickListener"/>
-
-    <Button
-        android:id="@+id/addDownloadActivityFinishTimeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/addDownloadActivityNameTextview"
-        android:layout_alignRight="@+id/addDownloadActivityNameTextview"
-        android:layout_below="@+id/addDownloadActivityNameTextview"
-        android:layout_marginRight="40dp"
-        android:text="Finish Time"
-        android:onClick="onFinishTimeButtonClickListener"/>
 
     <EditText
         android:id="@+id/addDownloadActivityPriorityEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addDownloadActivityStartTimeButton"
+        android:layout_below="@+id/addDownloadActivityNameTextview"
         android:layout_centerHorizontal="true"
         android:ems="3"
         android:hint="priority"

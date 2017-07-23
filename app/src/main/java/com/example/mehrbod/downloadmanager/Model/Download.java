@@ -10,11 +10,22 @@ public class Download {
     private String url;
     private String name;
     private ProgressBar progressBar = null;
+    private int priority = 1;
 
-    public Download(String url, String name, ProgressBar progressBar) {
+
+    public Download(String url, String name, ProgressBar progressBar, int priority) {
         this.url = url;
         this.name = name;
         this.progressBar = progressBar;
+        this.priority = priority;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getUrl() {

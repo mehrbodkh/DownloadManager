@@ -2,13 +2,19 @@ package com.example.mehrbod.downloadmanager;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,19 +22,27 @@ import android.widget.ProgressBar;
 
 import com.example.mehrbod.downloadmanager.Adapter.DownloadsAdapter;
 import com.example.mehrbod.downloadmanager.Database.MyDatabase;
-import com.example.mehrbod.downloadmanager.Downloader.DownloadHelper;
 import com.example.mehrbod.downloadmanager.Model.Download;
+import com.example.mehrbod.downloadmanager.Receiver.MyReceiver;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView = null;
     private DownloadsAdapter adapter = null;
     private List<Download> downloadList = null;
+    private int startHour;
+    private int startMinute;
+    private int finishHour;
+    private int finishMinute;
 
-    private DownloadHelper downloadHelper = null;
+    public static Activity mActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, 1);
+
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -50,14 +65,61 @@ public class MainActivity extends AppCompatActivity {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
         recyclerView.setAnimation(animation);
         recyclerView.setAdapter(adapter);
+    }
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mActivity = this;
     }
 
     public void onAddButtonClickListener(View view) {
         Intent intent = new Intent(this, AddDownload.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setReceiver();
+    }
+
+    private void setReceiver() {
+
+        try {
+            FileInputStream fileInputStream = openFileInput("time.txt");
+            Scanner inputFile = new Scanner(fileInputStream);
+            startHour = inputFile.nextInt();
+            Log.d("MainActivity", "startHour: " + startHour);
+            startMinute = inputFile.nextInt();
+            Log.d("MainActivity", "startMinute: " + startMinute);
+            finishHour = inputFile.nextInt();
+            Log.d("MainActivity", "finishHour: " + finishHour);
+            finishMinute = inputFile.nextInt();
+            Log.d("MainActivity", "finishMinute: " + finishMinute);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            startHour = 0;
+            startMinute = 0;
+            finishHour = 0;
+            finishMinute = 0;
+        }
+
+        Intent intent = new Intent(this, MyReceiver.class);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, startHour);
+        calendar.set(Calendar.MINUTE, startMinute);
+        calendar.set(Calendar.SECOND, 0);
+
+        Log.d("StartHour", "" + startHour);
+        Log.d("StartMinute", "" + startMinute);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
     }
 
     @Override
@@ -70,43 +132,28 @@ public class MainActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
 
             Download download = new Download(cursor.getString(1), cursor.getString(7),
-                    new ProgressBar(this));
+                    new ProgressBar(this), Integer.parseInt(cursor.getString(6)));
             downloadList.add(download);
         }
+
         adapter = new DownloadsAdapter(this, downloadList);
         recyclerView.setAdapter(adapter);
-    }
-}
 
 
-class Progress implements Runnable {
-    private Activity activity;
-    private ProgressBar progressBar;
-    private DownloadHelper downloadHelper;
-
-    public Progress(Activity activity, ProgressBar progressBar, DownloadHelper downloadHelper) {
-        this.activity = activity;
-        this.progressBar = progressBar;
-        this.downloadHelper = downloadHelper;
     }
 
     @Override
-    public void run() {
-        while (true) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.time_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setProgress(downloadHelper.getProgress());
-                }
-            });
-        }
+    public void onSetTimeItemClickListener(MenuItem item) {
+        startActivity(new Intent(this, SetTimeActivity.class));
     }
 }
+
+
+
 
 

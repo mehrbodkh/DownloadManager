@@ -20,7 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddDownload"></activity>
+        <activity android:name=".AddDownload" />
+        <activity android:name=".SetTimeActivity"></activity>
+
+        <receiver android:name=".Receiver.MyReceiver" />
     </application>
 
 </manifest>
