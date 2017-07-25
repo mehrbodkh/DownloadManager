@@ -1,8 +1,6 @@
 package com.example.mehrbod.downloadmanager.Receiver;
 
-import android.app.AlarmManager;
 import android.app.DownloadManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +21,6 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static android.content.Context.ALARM_SERVICE;
-
 /**
  * Created by mehrbod on 7/23/17.
  */
@@ -35,6 +31,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
 
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             Cursor cursor = MyDatabase.getInstance(context).getAllData();
@@ -46,11 +43,15 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                     Download download = new Download(cursor.getString(1), cursor.getString(3),
                             new ProgressBar(context), Integer.parseInt(cursor.getString(2)),
                             cursor.getString(4));
+                    download.setDownloadId(Long.parseLong(cursor.getString(5)));
                     downloadList.add(download);
                 }
             }
 
-            int minPriority = downloadList.get(0).getPriority();
+            int minPriority = 0;
+            if (!downloadList.isEmpty()) {
+                minPriority = downloadList.get(0).getPriority();
+            }
 
             for (Download download : downloadList) {
 
@@ -81,11 +82,21 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                 Log.d("Boolean", "false");
             }
             for (Download download : downloadList) {
-                if (download.getPriority() == minPriority) {
+                if (downloadId == download.getDownloadId()) {
+
+                    Log.d("DownloadId", "" + download.getDownloadId());
+                    Log.d("IntentId", "" + downloadId);
 
                     DatabaseHelper db = MyDatabase.getInstance(context);
-                    db.updateData(download.getUrl(), download.getPriority(), "COMPLETE");
-                    Log.d("Completed", "completed");
+                    db.updateData(download.getUrl(), download.getPriority(),
+                            "COMPLETE", downloadId);
+                    Log.d("Completed", download.getName());
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     if (downloadAgain) {
                         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -102,6 +113,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
 
                 }
             }
+
 
 
             if (counter == 0) {

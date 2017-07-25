@@ -12,6 +12,8 @@ public class Download {
     private ProgressBar progressBar = null;
     private int priority = 1;
     private String status;
+    private long downloadId;
+
 
     public Download(String url, String name, ProgressBar progressBar, int priority, String status) {
         this.url = url;
@@ -62,5 +64,13 @@ public class Download {
 
     public void setProgressBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
+    }
+
+    public long getDownloadId() {
+        return downloadId;
+    }
+
+    public void setDownloadId(long downloadId) {
+        this.downloadId = downloadId;
     }
 }

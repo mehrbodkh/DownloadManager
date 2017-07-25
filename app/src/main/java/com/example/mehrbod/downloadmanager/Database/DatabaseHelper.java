@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_PRIORITY = "PRIORITY";
     private static final String COL_NAME = "NAME";
     private static final String COL_STATUS = "STATUS";
+    private static final String COL_DOWNLOAD_ID = "DOWNLOAD_ID";
 
     private static final String CREATE_DB_TABLE_QUERY =
             "CREATE TABLE " + TABLE_NAME
@@ -27,7 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + "URL TEXT, "
                     + "PRIORITY TEXT, "
                     + "NAME TEXT, "
-                    + "STATUS TEXT)";
+                    + "STATUS TEXT, "
+                    + "DOWNLOAD_ID TEXT)";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -43,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXIST " + TABLE_NAME);
     }
 
-    public boolean insertData(String url, int priority, String status)
+    public boolean insertData(String url, int priority, String status, long downloadID)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -53,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_PRIORITY, priority);
         contentValues.put(COL_NAME, URLUtil.guessFileName(url, null, null));
         contentValues.put(COL_STATUS, status);
+        contentValues.put(COL_DOWNLOAD_ID, downloadID);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
@@ -62,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateData(String url, int priority, String status) {
+    public boolean updateData(String url, int priority, String status, long downloadId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -71,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_PRIORITY, priority);
         contentValues.put(COL_NAME, URLUtil.guessFileName(url, null, null));
         contentValues.put(COL_STATUS, status);
+        contentValues.put(COL_DOWNLOAD_ID, downloadId);
 
         int  result = db.update(TABLE_NAME, contentValues, "URL = ?", new String[]{url});
 

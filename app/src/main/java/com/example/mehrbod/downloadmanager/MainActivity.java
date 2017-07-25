@@ -105,21 +105,34 @@ public class MainActivity extends AppCompatActivity {
             finishMinute = 0;
         }
 
-        boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
-                new Intent(this, MyReceiver.class),
-                PendingIntent.FLAG_UPDATE_CURRENT) != null);
+//        boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
+//                new Intent(this, MyReceiver.class),
+//                PendingIntent.FLAG_UPDATE_CURRENT) != null);
+//
+//            Log.d("alarm", "up");
 
-        Log.d("alarm", "up");
 
-            Log.d("alarm", "starting");
-            Intent intent = new Intent(this, MyReceiver.class);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, startHour);
-            calendar.set(Calendar.MINUTE, startMinute);
-            calendar.set(Calendar.SECOND, 0);
+        Log.d("alarm", "starting");
+        Intent intent = new Intent(this, MyReceiver.class);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, startHour);
+        calendar.set(Calendar.MINUTE, startMinute);
+        calendar.set(Calendar.SECOND, 0);
+
+        int hour = Calendar.HOUR;
+        int minute = Calendar.MINUTE;
+
+        Log.d("hour", "" + hour);
+        Log.d("minute", "" + minute);
+
+        if (hour > startHour) {
+            Log.d("MainActivity", "broadcast not running");
+        } else if (hour == startHour && minute >= startMinute) {
+            Log.d("MainActivity", "broadcast not running");
+        } else {
             Log.d("StartHour", "" + startHour);
             Log.d("StartMinute", "" + startMinute);
 
@@ -127,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.widget.ProgressBar;
 
+import com.example.mehrbod.downloadmanager.Database.DatabaseHelper;
 import com.example.mehrbod.downloadmanager.Database.MyDatabase;
 import com.example.mehrbod.downloadmanager.Model.Download;
 import com.example.mehrbod.downloadmanager.Receiver.MyReceiver;
@@ -22,6 +23,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class DownloadRunnable implements Runnable {
     private Context context;
+    private static int runtimes = 0;
 
     public DownloadRunnable(Context context) {
         this.context = context;
@@ -61,22 +63,48 @@ public class DownloadRunnable implements Runnable {
                 }
             }
 
+            ArrayList<Download> minDownloadList = new ArrayList<>();
 //        ExecutorService executorService = Executors.newCachedThreadPool();
+
             for (Download download : downloadList) {
                 if (download.getPriority() == minPriority) {
+                    Download download1 = download;
+                    minDownloadList.add(download1);
+                }
+            }
+
+            int counter = 0;
+            for (Download download : minDownloadList) {
+                if (download.getStatus().equals("PENDING")) {
                     DownloadHelper downloadHelper = new DownloadHelper(context, download.getUrl(),
                             DownloadManager.Request.NETWORK_WIFI);
                     downloadHelper.prepareDownload();
                     downloadHelper.startDownload();
-                    break;
+                    DatabaseHelper db = MyDatabase.getInstance(context);
+                    db.updateData(download.getUrl(), download.getPriority(), "RUNNING",
+                            downloadHelper.getDownloadId());
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (runtimes >= 1) {
+                        break;
+                    }
+
+                    if (++counter >= 3) {
+                        runtimes++;
+                        break;
+                    }
+                }
 //
 //                executorService.execute(new ProgressBarController(
 //                        MainActivity.mActivity,
 //                        download.getProgressBar(),
 //                        downloadHelper
 //                ));
-
-                }
             }
         }
     }

@@ -66,7 +66,7 @@ public class DownloadHelper {
         return (int) (temp * 100);
     }
 
-    public void stopDownload() {
+    public void removeDownload() {
         downloadManager.remove(downloadId);
     }
 
@@ -76,5 +76,13 @@ public class DownloadHelper {
 
     public long getDownloadId() {
         return downloadId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

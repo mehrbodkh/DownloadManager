@@ -52,10 +52,38 @@ public class AddDownload extends AppCompatActivity {
 
     public void onAddDownloadButtonClickListener(View view) {
         EditText numberPriority = (EditText) findViewById(R.id.addDownloadActivityPriorityEditText);
-        priority = Integer.parseInt(numberPriority.getText().toString());
+        String tempPriority = numberPriority.getText().toString();
+
+        if (tempPriority.equals("")) {
+            String extension = null;
+            String theName = urlEditText.getText().toString();
+
+            for (int i = 0; i < theName.length(); i++) {
+                char temp = theName.charAt(i);
+
+                if (temp == '.') {
+                    for (int j = i + 1; j < theName.length(); j++) {
+                        extension += theName.charAt(j);
+                    }
+                }
+            }
+
+            if (extension.equals("mp4")) {
+                priority = 1;
+            } else if (extension.equals("mp3")) {
+                priority = 2;
+            } else if (extension.equals("pdf")) {
+                priority = 3;
+            }
+
+        }
+        else {
+            priority = Integer.parseInt(numberPriority.getText().toString());
+        }
+
 
         DatabaseHelper db = MyDatabase.getInstance(this);
-        db.insertData(url, priority, "PENDING");
+        db.insertData(url, priority, "PENDING", 0);
 
         finish();
     }
