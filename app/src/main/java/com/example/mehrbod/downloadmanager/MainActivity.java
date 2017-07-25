@@ -105,21 +105,28 @@ public class MainActivity extends AppCompatActivity {
             finishMinute = 0;
         }
 
-        Intent intent = new Intent(this, MyReceiver.class);
+        boolean alarmUp = (PendingIntent.getBroadcast(this, 0,
+                new Intent(this, MyReceiver.class),
+                PendingIntent.FLAG_UPDATE_CURRENT) != null);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, startHour);
-        calendar.set(Calendar.MINUTE, startMinute);
-        calendar.set(Calendar.SECOND, 0);
+        Log.d("alarm", "up");
 
-        Log.d("StartHour", "" + startHour);
-        Log.d("StartMinute", "" + startMinute);
+            Log.d("alarm", "starting");
+            Intent intent = new Intent(this, MyReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, startHour);
+            calendar.set(Calendar.MINUTE, startMinute);
+            calendar.set(Calendar.SECOND, 0);
+
+            Log.d("StartHour", "" + startHour);
+            Log.d("StartMinute", "" + startMinute);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     @Override
@@ -130,10 +137,14 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = MyDatabase.getInstance(this).getAllData();
 
         while (cursor.moveToNext()) {
+            String status = cursor.getString(4);
 
-            Download download = new Download(cursor.getString(1), cursor.getString(7),
-                    new ProgressBar(this), Integer.parseInt(cursor.getString(6)));
-            downloadList.add(download);
+            if (!status.equals("COMPLETE")) {
+                Download download = new Download(cursor.getString(1), cursor.getString(3),
+                        new ProgressBar(this), Integer.parseInt(cursor.getString(2)),
+                        cursor.getString(4));
+                downloadList.add(download);
+            }
         }
 
         adapter = new DownloadsAdapter(this, downloadList);

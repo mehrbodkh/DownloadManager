@@ -17,23 +17,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "download_table";
     private static final String COL_ID = "ID";
     private static final String COL_URL = "URL";
-    private static final String COL_START_HOUR = "START_HOUR";
-    private static final String COL_START_MINUTE = "START_MINUTE";
-    private static final String COL_FINISH_HOUR = "FINISH_HOUR";
-    private static final String COL_FINISH_MINUTE = "FINISH_MINUTE";
     private static final String COL_PRIORITY = "PRIORITY";
     private static final String COL_NAME = "NAME";
+    private static final String COL_STATUS = "STATUS";
 
     private static final String CREATE_DB_TABLE_QUERY =
             "CREATE TABLE " + TABLE_NAME
                     + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "URL TEXT, "
-                    + "START_HOUR TEXT, "
-                    + "START_MINUTE TEXT, "
-                    + "FINISH_HOUR TEXT, "
-                    + "FINISH_MINUTE TEXT, "
                     + "PRIORITY TEXT, "
-                    + "NAME TEXT)";
+                    + "NAME TEXT, "
+                    + "STATUS TEXT)";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -49,24 +43,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXIST " + TABLE_NAME);
     }
 
-    public boolean insertData(String url, int startHour, int startMinute, int finishHour,
-                              int finishMinute, int priority)
+    public boolean insertData(String url, int priority, String status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COL_URL, url);
-        contentValues.put(COL_START_HOUR, startHour);
-        contentValues.put(COL_START_MINUTE, startMinute);
-        contentValues.put(COL_FINISH_HOUR, finishHour);
-        contentValues.put(COL_FINISH_MINUTE, finishMinute);
         contentValues.put(COL_PRIORITY, priority);
         contentValues.put(COL_NAME, URLUtil.guessFileName(url, null, null));
+        contentValues.put(COL_STATUS, status);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
         if (result == -1) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateData(String url, int priority, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL_URL, url);
+        contentValues.put(COL_PRIORITY, priority);
+        contentValues.put(COL_NAME, URLUtil.guessFileName(url, null, null));
+        contentValues.put(COL_STATUS, status);
+
+        int  result = db.update(TABLE_NAME, contentValues, "URL = ?", new String[]{url});
+
+        if (result == 0) {
             return false;
         }
         return true;

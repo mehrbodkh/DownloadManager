@@ -13,13 +13,6 @@ import com.example.mehrbod.downloadmanager.Database.DatabaseHelper;
 import com.example.mehrbod.downloadmanager.Database.MyDatabase;
 
 public class AddDownload extends AppCompatActivity {
-
-    private int startHour = 0;
-    private int startMinute = 0;
-
-    private int finishHour = 0;
-    private int finishMinute = 0;
-
     private String url;
 
     private int priority = 1;
@@ -62,7 +55,7 @@ public class AddDownload extends AppCompatActivity {
         priority = Integer.parseInt(numberPriority.getText().toString());
 
         DatabaseHelper db = MyDatabase.getInstance(this);
-        db.insertData(url, startHour, startMinute, finishHour, finishMinute, priority);
+        db.insertData(url, priority, "PENDING");
 
         finish();
     }

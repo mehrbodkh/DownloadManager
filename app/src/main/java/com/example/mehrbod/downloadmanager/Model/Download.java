@@ -11,14 +11,26 @@ public class Download {
     private String name;
     private ProgressBar progressBar = null;
     private int priority = 1;
+    private String status;
 
-
-    public Download(String url, String name, ProgressBar progressBar, int priority) {
+    public Download(String url, String name, ProgressBar progressBar, int priority, String status) {
         this.url = url;
         this.name = name;
         this.progressBar = progressBar;
         this.priority = priority;
+        this.status = status;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+
+
 
     public int getPriority() {
         return priority;
